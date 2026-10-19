@@ -13,8 +13,10 @@ jobs:
         env:
           DEV_SECRET: ${{ secrets.DEV_TOKEN }}
         run: |
-          if ($env:DEV_SECRET -eq $env:LOCAL_DEV_TOKEN) {
-              Write-Output "Los tokens COINCIDEN correctamente."
+          Write-Output "Valor Secret: '$env:DEV_SECRET'"
+          Write-Output "Valor Local: '$env:LOCAL_DEV_TOKEN'"
+          if ("$env:DEV_SECRET" -eq "$env:LOCAL_DEV_TOKEN") {
+              Write-Output "¡Los tokens COINCIDEN correctamente!"
               exit 0
           } else {
               Write-Output "ERROR: Los tokens NO coinciden."
