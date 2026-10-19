@@ -1,0 +1,19 @@
+name: Prueba Token Secrets
+
+on: [push]
+
+jobs:
+  comprobar-token:
+    runs-on: self-hosted
+    steps:
+      - name: Comprobar token DEV contra variable local
+        env:
+          DEV_SECRET: ${{ secrets.DEV_TOKEN }}
+        run: |
+          if [ "$DEV_SECRET" = "$LOCAL_DEV_TOKEN" ]; then
+              echo "Los tokens COINCIDEN correctamente."
+              exit 0
+          else
+              echo "ERROR: Los tokens NO coinciden."
+              exit 1
+          >
