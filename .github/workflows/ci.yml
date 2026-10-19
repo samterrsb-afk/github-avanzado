@@ -1,0 +1,39 @@
+name: CI Workflow
+
+on:
+  pull_request:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Actualizar README.md con nueva feature
+        run: |
+          echo "Añadida feature: ${{ github.head_ref }}" >> README.md
+          echo "README actualizado localmente en el job"
+
+  validate-dev:
+    needs: update-readme
+    runs-on: self-hosted
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Validar DEV_TOKEN
+        env:
+          DEV_SECRET: ${{ secrets.DEV_TOKEN }}
+          LOCAL_DEV_TOKEN: "mi_token_secreto_dev_123"
+        run: |
+          Write-Output "Validando DEV TOKEN..."
+          if ("$env:DEV_SECRET" -eq "$env:LOCAL_DEV_TOKEN") {
+              Write-Output "¡DEV TOKEN validado correctamente!"
+              exit 0
+          } else {
+              Write-Output "ERROR: DEV TOKEN no coincide."
+              exit 1
+          }
