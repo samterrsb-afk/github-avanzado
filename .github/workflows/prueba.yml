@@ -12,7 +12,7 @@ jobs:
       - name: Comprobar token DEV contra variable local
         env:
           DEV_SECRET: ${{ secrets.DEV_TOKEN }}
-          LOCAL_DEV_TOKEN: "mi_token_secreto_dev_123"
+          LOCAL_DEV_TOKEN: "token_incorrecto_para_probar_fallo"
         run: |
           Write-Output "Valor Secret: '$env:DEV_SECRET'"
           Write-Output "Valor Local: '$env:LOCAL_DEV_TOKEN'"
