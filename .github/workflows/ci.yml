@@ -1,8 +1,6 @@
 name: CI Workflow
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
     branches: [ develop ]
   workflow_dispatch:
@@ -16,12 +14,8 @@ jobs:
 
       - name: Actualizar README.md con nueva feature
         run: |
-          echo "Añadida feature: ${{ github.ref_name }}" >> README.md
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "Update README with new feature" || exit 0
-          git push
+          echo "Añadida feature: ${{ github.head_ref }}" >> README.md
+          echo "README actualizado localmente en el job"
 
   validate-dev:
     needs: update-readme
