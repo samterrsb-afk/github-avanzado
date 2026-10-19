@@ -1,0 +1,46 @@
+name: CD Workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Incrementar versión en README.md
+        run: |
+          sed -i 's/AppVersion-0/AppVersion-1/g' README.md
+          echo "Desplegado el $(date)" >> README.md
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Bump version in README" || exit 0
+          git push
+
+  validate-prod:
+    needs: update-version
+    runs-on: self-hosted
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Validar PROD_TOKEN
+        env:
+          PROD_SECRET: ${{ secrets.PROD_TOKEN }}
+          LOCAL_PROD_TOKEN: "mi_token_secreto_prod_123"
+        run: |
+          Write-Output "Validando PROD TOKEN..."
+          if ("$env:PROD_SECRET" -eq "$env:LOCAL_PROD_TOKEN") {
+              Write-Output "¡PROD TOKEN validado correctamente!"
+              exit 0
+          } else {
+              Write-Output "ERROR: PROD TOKEN no coincide."
+              exit 1
+          }
