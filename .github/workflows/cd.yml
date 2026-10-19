@@ -3,8 +3,6 @@ name: CD Workflow
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -18,11 +16,7 @@ jobs:
         run: |
           sed -i 's/AppVersion-0/AppVersion-1/g' README.md
           echo "Desplegado el $(date)" >> README.md
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "Bump version in README" || exit 0
-          git push
+          echo "Versión actualizada localmente en el job"
 
   validate-prod:
     needs: update-version
